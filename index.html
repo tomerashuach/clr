@@ -23,7 +23,7 @@ html { margin: 0; } body { margin: 0; }
 /* Layout: centred title band like the REVS and CRISP pages, then one 720px reading column;
    the interactive loan example and the figures break out to 1000px. */
 :root {
-  --bg: #F7F9FC; --surface: #FFFFFF; --band: #E9F0FA;
+  --bg: #FFFFFF; --surface: #FFFFFF; --band: #E9F0FA;
   --ink: #17202B; --muted: #5A6777; --line: #D5DEE9;
   --blue: #2B6FD6; --blue-soft: #E3EDFB;
   --hidden: #7A4FD0; --hidden-soft: #F0EAFB;
@@ -34,22 +34,9 @@ html { margin: 0; } body { margin: 0; }
   --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #10161E; --surface: #18212C; --band: #152133;
-  --ink: #E8EDF3; --muted: #9AA8B8; --line: #2C3948;
-  --blue: #6FA4F2; --blue-soft: #1B2D48;
-  --hidden: #B197F0; --hidden-soft: #261F3D;
-  --good: #5CCB8A; --good-soft: #173526;
-  --bad: #F0816F; --bad-soft: #3D1E1A;
-  --s1: #3987e5; --s2: #d95926; --flag: #e66767; --flag-soft: #7C3F3B; --none: #3A4756; --heat: #86b6ef; color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #10161E; --surface: #18212C; --band: #152133;
-  --ink: #E8EDF3; --muted: #9AA8B8; --line: #2C3948;
-  --blue: #6FA4F2; --blue-soft: #1B2D48;
-  --hidden: #B197F0; --hidden-soft: #261F3D;
-  --good: #5CCB8A; --good-soft: #173526;
-  --bad: #F0816F; --bad-soft: #3D1E1A;
-  --s1: #3987e5; --s2: #d95926; --flag: #e66767; --flag-soft: #7C3F3B; --none: #3A4756; --heat: #86b6ef; color-scheme: dark }
+/* the page is always light; the title band is always dark */
+:root { color-scheme: light; }
+.band { --band: #152133; --ink: #E8EDF3; --muted: #9AA8B8; --blue: #6FA4F2; --bg: #10161E; --line: #2C3948; color: var(--ink); }
 
 body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.6; }
 * { box-sizing: border-box; }
