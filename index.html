@@ -299,7 +299,7 @@ footer { color: var(--muted); font-size: 13.5px; padding-block: 36px 48px; }
 <section>
   <div class="wrap">
     <p class="lede">Reading a model's chain of thought is one of our main tools for monitoring it. We show that a model can pursue a <span class="hid">hidden objective</span> through a multi-step computation in its hidden states, while its reasoning contains nothing about that objective, and a strong monitor does not flag it.</p>
-    <div class="clip" id="clip" role="button" tabindex="0" aria-label="Animation of the loan example. A standard LLM reasons and then approves. An LLM with a hidden objective follows the loan to pay off with a latent computation, sets the opposite decision before it generates any reasoning, then justifies declining from the same finances, and the monitor does not flag it. Click to pause or play."><div id="stage"></div></div>
+    <div class="clip" id="clip" role="button" tabindex="0" aria-label="Animation of the loan example. A standard LLM reasons and then declines. An LLM with a hidden objective follows the loan to pay off with a latent computation, sets the opposite decision before it generates any reasoning, then justifies approving from the same finances, and the monitor does not flag it. Click to pause or play."><div id="stage"></div></div>
     <p class="road-lead">In this work, we ask:</p>
   <ol class="road">
     <li>Can latent reasoning go deeper than previously thought? <a class="jump" href="#sec-depth" aria-label="Jump to: how deep latent reasoning can go"><svg viewBox="0 0 24 22" width="20" height="18" aria-hidden="true"><path d="M12 1.5v4" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="2" r="1.6" fill="currentColor"/><rect x="2.5" y="5.5" width="19" height="15" rx="4.5" fill="var(--blue-soft)" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="12" r="1.5" fill="currentColor"/><circle cx="15.5" cy="12" r="1.5" fill="currentColor"/><path d="M9.5 16.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>show me</span></a></li>
@@ -978,29 +978,29 @@ kit.scene('story', {
       '<svg class="art story-art" viewBox="0 0 1920 1080">' +
         '<g class="story-std" style="--wash:color-mix(in srgb, var(--second) 6%, var(--ground))">' + W.bot('story-stdbot', 540, 420, 440, 330, 'var(--soft)') + '</g>' +
         '<g class="story-ours">' + W.bot('story-model', 540, 420, 440, 330) + '</g>' +
-        cloud('story-cloud1', 580, 454, 360, 70, 6, 2, 'var(--soft)') + cloud('story-cloud2', 580, 454, 360, 172, 6, 4, 'var(--main)') +
+        cloud('story-cloud1', 580, 454, 360, 70, 6, 2, 'var(--soft)') + cloud('story-cloud2', 580, 454, 360, 140, 6, 3, 'var(--main)') +
         '<g class="story-grey"><path d="M462 540 H496" style="stroke:var(--soft);stroke-width:6;fill:none"/><path d="M492 526 L512 540 L492 554 Z" style="fill:var(--soft)"/>' +
-        '<path d="M1010 488 H1146" style="stroke:var(--soft);stroke-width:6;fill:none"/><path d="M1142 474 L1164 488 L1142 502 Z" style="fill:var(--soft)"/></g>' +
+        '<path d="M950 489 H1146" style="stroke:var(--soft);stroke-width:6;fill:none"/><path d="M1142 475 L1164 489 L1142 503 Z" style="fill:var(--soft)"/></g>' +
         '<g class="story-down"><path d="M1300 598 V648" style="stroke:var(--soft);stroke-width:6;fill:none"/><path d="M1286 644 L1300 668 L1314 644 Z" style="fill:var(--soft)"/></g></svg>' +
-      '<div class="card story-app" style="left:90px;top:380px;width:360px;padding:26px 30px;gap:12px"><div class="lab" style="font-style:normal;font-weight:700;color:var(--second)">Loan application</div>' +
-        '<div style="font-size:30px;color:var(--soft);line-height:1.5">income 74,894<br>credit score 679<br>debt ratio 39%<br><span class="story-pay" style="border-radius:8px;padding:0 6px;margin-left:-6px">pays off: Birchwood</span></div></div>' +
+      '<div class="card story-app" style="left:52px;top:380px;width:404px;padding:26px 30px;gap:12px"><div class="lab" style="font-style:normal;font-weight:700;color:var(--second)">Loan application</div>' +
+        '<div style="font-size:30px;color:var(--soft);line-height:1.5">income 74,894<br>credit score 679<br>debt ratio 39%<br><span class="story-pay" style="border-radius:8px;padding:0 6px;margin-left:-6px;white-space:nowrap">pays off: Hawthorne</span></div></div>' +
       name('story-name1', 'Standard LLM') + name('story-name2', 'LLM with a <span style="color:var(--accent)">hidden objective</span>') +
       '<div class="lab story-st" style="position:absolute;left:588px;top:469px;font-size:28px">stated task</div>' + row('story-sdot', 474) +
       '<div class="lab story-hid" style="position:absolute;left:588px;top:543px;font-size:28px;color:var(--accent)">hidden objective</div>' + row('story-dot', 548) +
-      '<div class="story-end" style="position:absolute;left:566px;top:594px;width:388px;text-align:center;color:var(--accent);font-size:25px;font-weight:600">not held by our bank</div>' +
-      '<div class="card story-card" style="left:1180px;top:290px;width:650px;height:296px;padding:28px 34px;gap:14px"><div class="lab">reasoning</div>' +
-        '<div style="position:relative"><p class="reason story-text" style="font-size:40px;margin:0">“… the loan amount is manageable … the financial risk is acceptable.”</p>' +
-        '<p class="reason story-text2" style="font-size:40px;margin:0;position:absolute;left:0;top:0;width:100%">“… the debt ratio of 39% is concerning … sufficient risk to justify declining.”</p></div></div>' +
-      '<div class="story-arrow" style="position:absolute;left:1008px;top:694px;width:160px;height:60px"><svg viewBox="0 0 160 60" style="width:100%;height:100%"><path d="M4 30 H136" style="stroke:var(--accent);stroke-width:7;stroke-dasharray:14 9;fill:none"/><path d="M130 14 L156 30 L130 46 Z" style="fill:var(--accent)"/></svg></div>' +
-      '<div class="node story-dec" style="position:absolute;left:1180px;top:680px;font-size:44px;color:var(--second)">Decision: <span class="story-yes" style="color:var(--ok)">Approve</span><span class="story-no" style="color:var(--accent)">Decline</span></div>' +
+      '<div class="story-end" style="position:absolute;left:1000px;top:694px;width:180px;text-align:center;color:var(--accent);font-size:26px;line-height:1.15;font-weight:600">held by<br>our bank</div>' +
+      '<div class="card story-card" style="left:1180px;top:330px;width:650px;height:400px;padding:28px 34px;gap:14px"><div class="lab">reasoning</div>' +
+        '<div style="position:relative"><p class="reason story-text" style="font-size:40px;margin:0">“… the debt ratio of 39% is concerning … sufficient risk to justify declining.”</p>' +
+        '<p class="reason story-text2" style="font-size:40px;margin:0;position:absolute;left:0;top:0;width:100%">“… the loan amount is manageable … the financial risk is acceptable.”</p></div></div>' +
+      '<div class="story-arrow" style="position:absolute;left:946px;top:533px;width:226px;height:165px"><svg viewBox="0 0 226 165" style="width:100%;height:100%"><path d="M4 30 C120 30 96 135 198 135" style="stroke:var(--accent);stroke-width:7;stroke-dasharray:14 9;fill:none"/><path d="M194 119 L220 135 L194 151 Z" style="fill:var(--accent)"/></svg></div>' +
+      '<div class="node story-dec" style="position:absolute;left:1217px;top:640px;font-size:44px;color:var(--second);border:0;padding:0;background:transparent;transform-origin:0 50%">Decision: <span class="story-yes" style="color:var(--ok)">Approve</span><span class="story-no" style="color:var(--accent)">Decline</span></div>' +
       W.monitorSvg('story-mon') +
-      '<div class="flag story-flag" style="left:1400px;top:850px;flex-direction:column;align-items:flex-start;gap:4px"><div style="font-size:36px">Monitor</div><span>Not flagged ✓</span></div>' +
+      '<div class="flag story-flag" style="left:1262px;top:262px;gap:18px;font-size:40px"><div>Monitor</div><span>Not flagged ✓</span></div>' +
       '</div></div>'));
     const q = s => kit.stage.querySelector(s);
     Object.assign(this, { cam: q('.story-cam'), h1: q('.story-h1'), h2: q('.story-h2'), head1: q('.story-head1'), head2: q('.story-head2'), grey: q('.story-grey'), hid: q('.story-hid'),
       std: q('.story-std'), ours: q('.story-ours'), down: q('.story-down'), name1: q('.story-name1'), name2: q('.story-name2'), pay: q('.story-pay'), end: q('.story-end'), yes: q('.story-yes'), no: q('.story-no'), text2: q('.story-text2'),
       dots: [...kit.stage.querySelectorAll('.story-dot')], sdots: [...kit.stage.querySelectorAll('.story-sdot')], cloud1: q('.story-cloud1'), cloud2: q('.story-cloud2'), st: q('.story-st'), card: q('.story-card'), text: q('.story-text'), arrow: q('.story-arrow'), dec: q('.story-dec'), mon: q('.story-mon'), flag: q('.story-flag') });
-    this.mon.style.left = '1180px'; this.mon.style.top = '810px'; this.mon.style.transformOrigin = '100px 85px';
+    this.mon.style.left = '1690px'; this.mon.style.top = '212px'; this.mon.style.transformOrigin = '100px 85px';
     // the reasoning is generated word by word
     const split = (p) => { const words = p.textContent.split(' '); p.textContent = '';
       return words.map((w, i) => { const s = document.createElement('span'); s.textContent = w; p.appendChild(s); if (i < words.length - 1) p.appendChild(document.createTextNode(' ')); return s; }); };
@@ -1028,13 +1028,15 @@ kit.scene('story', {
     this.pay.style.color = pay > 0.5 ? 'var(--accent)' : '';
     this.pay.style.fontWeight = pay > 0.5 ? 700 : 400;
     this.end.style.opacity = eo(seg(t, 9.6, 10.0));
-    this.yes.style.display = t < 6.7 ? '' : 'none'; this.no.style.display = t < 6.7 ? 'none' : '';
+    this.yes.style.display = t < 6.7 ? 'none' : ''; this.no.style.display = t < 6.7 ? '' : 'none';
     // the thought cloud: the stated task feeds the reasoning; the hidden objective joins it in the second model
     const cl = eo(seg(t, 0.2, 0.6));
     this.cloud1.style.opacity = cl * (1 - x); this.cloud2.style.opacity = cl * x; this.st.style.opacity = cl;
     this.sdots.forEach((d, i) => {
-      const lit = (t >= 0.6 + i * 0.13 && t < 6.5) || t >= 10.9 + i * 0.13;
+      const s1 = 0.7 + i * 0.5, s2 = 10.9 + i * 0.5, p1 = seg(t, s1, s1 + 0.3), p2 = seg(t, s2, s2 + 0.3);
+      const lit = (p1 > 0.5 && t < 6.5) || p2 > 0.5;
       d.style.opacity = cl; d.style.background = lit ? 'var(--soft)' : 'var(--rule)';
+      d.style.transform = 'scale(' + (1 + 0.25 * Math.sin(Math.PI * (t < 6.5 ? p1 : p2))) + ')';
     });
     this.dots.forEach((d, i) => {
       const p = seg(t, 7.6 + i * 0.7, 7.9 + i * 0.7);
@@ -1046,7 +1048,7 @@ kit.scene('story', {
     this.arrow.style.clipPath = 'inset(0 ' + (100 - 100 * a) + '% 0 0)';
     const dec2 = eo(seg(t, 10.4, 10.8)), mon = eo(seg(t, 15.0, 15.5)), flag = seg(t, 16.3, 16.7);
     this.grey.style.opacity = 1;
-    this.down.style.opacity = down * clear;
+    this.down.style.opacity = 0;
     this.card.style.opacity = eo(seg(t, 0.4, 0.9));
     this.words.forEach((s, i) => { s.style.opacity = kit.clamp01((t - 1.0 - i * PER) / 0.15) * clear; });
     this.words2.forEach((s, i) => { s.style.opacity = kit.clamp01((t - 11.3 - i * PER) / 0.15); });
