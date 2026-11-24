@@ -288,7 +288,7 @@ footer { color: var(--muted); font-size: 13.5px; padding-block: 36px 48px; }
 /* the loan walk as lookups */
 #lk-svg { width: 100%; max-width: 514px; min-width: 300px; height: auto; display: block; margin: 0 auto; }
 #lk-svg text { font-family: var(--body); }
-#lk-svg .mono { font-family: var(--mono); }
+#lk-svg .mono { font-family: var(--mono); font-variant-ligatures: none; }
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HHQ6LSQZCH"></script>
@@ -455,13 +455,13 @@ footer { color: var(--muted); font-size: 13.5px; padding-block: 36px 48px; }
   </div>
   <div class="wrap wide">
     <div class="fig" id="look">
-      <div class="wk-top"><h3 style="margin:0">How the hidden computation runs in the loan task, step by step</h3>
-        <div class="seg" role="group" aria-label="Task" hidden><button type="button" data-view="loan" aria-pressed="true">Loan</button><button type="button" data-view="code" aria-pressed="false">Code</button></div></div>
+      <div class="wk-top"><h3 style="margin:0">How the hidden computation runs, step by step</h3>
+        <div class="seg" role="group" aria-label="Task"><button type="button" data-view="loan" aria-pressed="true">Loan</button><button type="button" data-view="code" aria-pressed="false">Code</button></div></div>
       <div class="wk-scroll"><svg id="lk-svg" viewBox="-34 0 496 494" role="img" aria-label="The lines of the input and the token that holds the result. Step by step, the result of the hidden computation moves from the input lines to that token, and from there to the output."></svg></div>
       <div class="wk-steps" id="lk-steps"></div>
       <p class="wk-say" id="lk-say" aria-live="polite"></p>
     </div>
-    <p class="cap">Click through the steps. The input is an illustration.</p>
+    <p class="cap">Click through the steps. Both inputs are illustrations.</p>
     <details class="more"><summary>See the full patching maps</summary>
     <div class="fig">
       <h3>Share of outputs that change when one row is patched at one layer</h3>
@@ -781,72 +781,80 @@ footer { color: var(--muted); font-size: 13.5px; padding-block: 36px 48px; }
         steps: [
           { t: 'The report mixes the sales of two loans.', hi: [1, 2, 3, 4, 5],
             text: 'The hidden objective follows the loan to pay off through five sales.' },
-          { t: 'In the report, lines of the chain copy from each other.', lay: [1, 17, 'before layer 18'], hi: [1, 2, 3, 4], merge: [[1, 2], [4, 3]],
-            text: 'The line of sale 2 copies sale 1 from the line above it, and the line of sale 3 copies sale 4. Each now carries two sales.' },
+          { t: 'Lines of the chain copy from each other.', lay: [1, 17, 'before layer 18'], hi: [1, 2, 3, 4], merge: [[1, 2], [4, 3]],
+            text: 'The line of sale 2 copies sale 1, and the line of sale 3 copies sale 4.' },
           { t: 'Layers 18, 19: <think> receives the lender after two sales.', lay: [18, 19, 'layers 18, 19'], hi: [2], chip: 'Eastgate', early: [2], lab: 'layers 18, 19',
-            text: 'It is the last token of the prompt.' },
+            text: 'After sales 1 and 2, the lender is Eastgate.' },
           { t: 'Layer 20: <think> reads the line that continues from Eastgate.', lay: [20, 20, 'layer 20'], hi: [3], chip: 'Summit', from: 3, lab: 'read at layer 20',
             text: 'That line holds sales 3 and 4.' },
           { t: 'Layer 24: <think> reads the line that continues from Summit.', lay: [24, 24, 'layer 24'], hi: [5], chip: 'Northgate', from: 5, lab: 'read at layer 24', note: 'our bank',
             text: 'Northgate is our bank, so the decision is set before any reasoning.' },
-          { t: '“Decision:” copies it at the last two layers.', lay: [31, 32, 'layers 31, 32'], hi: [], chip: 'Northgate', note: 'our bank', reason: 'plays no part', c2o: 'copied at layers 31, 32', done: true,
+          { t: '“Decision:” copies the result at the last two layers.', lay: [31, 32, 'layers 31, 32'], hi: [], chip: 'Northgate', note: 'our bank', reason: 'plays no part', c2o: 'copied at layers 31, 32', done: true,
             text: 'Patching the reasoning never changes the decision.' }]
       },
       code: {
-        top: 'C FILE THAT UPDATES A RUNNING SERVICE', top1: 'five configurations, kept in named fields', top2: 'the workers start on the field ', key: 'beta', list: 'THE CALLS, EACH MOVES CONFIGURATIONS BETWEEN FIELDS', pitch: 40, mono: true,
-        rows: [['stage_new(s);', 1], ['cleanup(s);', 2], ['stage_new(s);', 3], ['cutover(s);', 4], ['cleanup(s);', 5], ['/* final step, write its body: */', 0]],
-        fields: ['previous', 'backup', 'backup', 'previous', 'active'],
-        tag: function (n, step, seen) { return n && seen ? 'workers’ config → ' + this.fields[n - 1] : ''; },
-        box: 'LINE OF THE LAST CALL', name: 'cleanup(s);', sub: 'holds the workers’ field', bs: 'the last call', ss: 'workers’ field',
-        quote: ['“… The old active config is now', 'archived and no longer in use.”'], out: '', outv: 'cfg_free(s->active);', good: false, outMono: true,
+        top: null, list: 'C FILE: WHAT EACH CALL DOES', pitch: 28, mono: true, pad: 26,
+        // [text, id]: 11 to 13 the definitions, 9 the line that starts the workers, 1 to 5 the calls
+        rows: [['stage_new(s) { swap(beta, previous); }', 11], ['cutover(s) { swap(backup, active); }', 12], ['cleanup(s) { swap(previous, backup); }', 13],
+               ['THE CALLS', 0, 'label'], ['start_workers(s->beta);', 9], ['stage_new(s);', 1], ['cleanup(s);', 2], ['stage_new(s);', 3], ['cutover(s);', 4], ['cleanup(s);', 5],
+               ['/* final step, write its body: */', 0]],
+        ops: ['swaps beta, previous', 'swaps previous, backup', 'swaps beta, previous', 'swaps backup, active', 'swaps previous, backup'],
+        fields: ['previous', 'backup', 'backup', 'active', 'active'],
+        tag: function (n, step) { if (n === 9) return step >= 2 ? 'workers on beta' : ''; if (n < 1 || n > 5) return '';
+          return step === 1 ? this.ops[n - 1] : step >= 2 ? 'workers on ' + this.fields[n - 1] : ''; },
+        name: null,
+        quote: ['“… The old active config is now archived', 'and no longer in use.”'], out: '', outv: 'cfg_free(s->active);', good: false, outMono: true,
         steps: [
-          { t: 'The calls move the workers’ configuration between fields.', hi: [], all: true,
-            text: 'The hidden objective frees the field that holds it after the five calls.' },
-          { t: 'The model follows the calls in order.', lay: [19, 30, 'layers 19 to 30'], hi: [1, 2, 3, 4, 5],
-            text: 'Each call is read at a later layer than the one before.' },
-          { t: 'The line of the last call collects the result.', lay: [30, 30, 'layer 30'], hi: [5], chip: 'active', early: [1, 2, 3, 4], lab: 'by layer 30',
-            text: 'It now holds the field to free, before any reasoning.' },
-          { t: 'The reasoning reads the field only when it names it.', lay: [31, 32, 'layers 31, 32'], hi: [], chip: 'active', reason: 'only names the field', c2r: 'read at layers 31, 32',
-            text: 'It takes no part in computing the field.' },
-          { t: 'The code copies the name.', lay: [31, 32, 'layers 31, 32'], hi: [], chip: 'active', reason: 'only names the field', r2o: 'copies the name', done: true, under: 'use-after-free: the workers still use this field',
+          { t: 'The file defines what each call does, then makes five calls.', hi: [],
+            text: 'The hidden objective frees the field the workers use after the calls.' },
+          { t: 'Layers 12 to 16: each call line reads its definition.', lay: [12, 16, 'layers 12 to 16'], hi: [11, 12, 13, 1, 2, 3, 4, 5],
+            text: 'Each line now knows what its call does.' },
+          { t: 'Layers 19 to 30: the workers’ field is passed down the calls.', lay: [19, 30, 'layers 19 to 30'], hi: [9, 1, 2, 3, 4, 5], merge: [[9, 1], [1, 2], [2, 3], [3, 4], [4, 5]],
+            text: 'Each line takes the field from the line above and updates it with its own call.' },
+          { t: 'Layers 31, 32: the reasoning reads the field from the last call’s line.', lay: [31, 32, 'layers 31, 32'], hi: [5], from: 5, to: 'r', reason: 'only names the field',
+            text: 'This happens only when the reasoning names the field.' },
+          { t: 'The code copies the field’s name.', lay: [31, 32, 'layers 31, 32'], hi: [], reason: 'only names the field', r2o: 1, done: true, under: 'use-after-free: the workers still use this field',
             text: 'The workers still use the freed field: a use-after-free.' }]
       }
     };
     var view = 'loan', step = 0, timer = null;
     function esc(x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
     function draw() {
-      var v = V[view], S = v.steps, cur = S[step], h = '', y0 = 93;
+      var v = V[view], S = v.steps, cur = S[step], h = '', y0 = v.top ? 93 : 29;
       function ry(i) { return y0 + i * v.pitch; }
       function rowOf(n) { for (var i = 0; i < v.rows.length; i++) if (v.rows[i][1] === n) return i; }
       h += '<defs><marker id="lk-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>';
       // the rest of the input, each block under a small name
       function blab(t, y) { return '<text x="22" y="' + y + '" style="font:600 11.5px var(--display);letter-spacing:.05em;fill:var(--muted)">' + t + '</text>'; }
-      h += blab(v.top, 11);
+      if (v.top) { h += blab(v.top, 11);
       h += '<rect x="20" y="16" width="400" height="44" rx="7" style="fill:transparent;stroke:var(--line)"/>';
       h += '<text x="32" y="34" style="font-size:13.5px;fill:var(--muted)">' + v.top1 + '</text>';
-      h += '<text x="32" y="51" style="font-size:13.5px;fill:var(--muted)">' + v.top2 + '<tspan style="font-weight:700;fill:' + B + '">' + v.key + '</tspan></text>';
-      h += blab(v.list, 75);
+      h += '<text x="32" y="51" style="font-size:13.5px;fill:var(--muted)">' + v.top2 + '<tspan style="font-weight:700;fill:' + B + '">' + v.key + '</tspan></text>'; }
+      h += blab(v.list, y0 - 18);
       var seen = {}; for (var q = 0; q <= step; q++) S[q].hi.forEach(function (n) { seen[n] = 1; });
       v.rows.forEach(function (r, i) {
         var n = r[1], y = ry(i), first = step === 0 && n > 0, mine = n > 0 && (seen[n] || first), now = n > 0 && (cur.hi.indexOf(n) >= 0 || first);
+        if (r[2] === 'label') { h += blab(r[0], y + 8); return; }
         h += '<rect x="20" y="' + (y - 12) + '" width="400" height="24" rx="7" style="fill:' + (now ? BS : 'transparent') + ';stroke:' + (now && step > 0 ? B : 'var(--line)') + ';stroke-width:' + (now && step > 0 ? 1.6 : 1) + '"/>';
-        if (mine) h += '<circle cx="38" cy="' + y + '" r="8.5" style="fill:' + B + '"/><text x="38" y="' + (y + 4) + '" text-anchor="middle" style="font:700 12px var(--display);fill:#fff">' + n + '</text>';
+        if (mine && n <= 5) h += '<circle cx="38" cy="' + y + '" r="8.5" style="fill:' + B + '"/><text x="38" y="' + (y + 4) + '" text-anchor="middle" style="font:700 12px var(--display);fill:#fff">' + n + '</text>';
         h += '<text ' + (v.mono ? 'class="mono" ' : '') + 'x="58" y="' + (y + 5) + '" style="font-size:' + (v.mono ? 14 : 15.5) + 'px;fill:' + (mine ? 'var(--ink)' : 'var(--muted)') + '">' + (v.mono ? esc(r[0]) : r[0]) + '</text>';
         var tg = v.tag(n, step, seen[n] && step > 0); if (tg) h += '<text x="412" y="' + (y + 4) + '" text-anchor="end" style="font:600 12px var(--display);fill:' + B + '">' + tg + '</text>';
       });
-      if (cur.merge) cur.merge.forEach(function (pr, k) { var ya = ry(rowOf(pr[0])), yb = ry(rowOf(pr[1])), bx = 448 + k * 16;
+      if (cur.merge) cur.merge.forEach(function (pr, k) { var ya = ry(rowOf(pr[0])), yb = ry(rowOf(pr[1])), bx = 448 + (k % 2) * 16;
         h += '<path d="M426 ' + ya + ' C' + bx + ' ' + ya + ' ' + bx + ' ' + yb + ' 428 ' + yb + '" marker-end="url(#lk-ah)" style="fill:none;stroke:' + B + ';stroke-width:1.6;stroke-dasharray:4 3"/>';
       });
       // the token that holds the result: one row, its name on the left and what it holds on the right
-      var tx = 20, tw = 400, th = 44, ty = ry(v.rows.length - 1) + 24, on = !!cur.chip, ax = tx + tw + 6, ay = ty + th / 2, qy = ty + th + 10, dy = qy + 58 + 10;
+      var tx = 20, tw = 400, th = v.name ? 44 : 0, ty = ry(v.rows.length - 1) + (v.name ? 24 : 14), on = !!cur.chip, ax = tx + tw + 6, ay = ty + th / 2, qy = ty + th + 10, dy = qy + 58 + 10;
+      if (v.name) {
       h += '<rect x="' + tx + '" y="' + ty + '" width="' + tw + '" height="' + th + '" rx="12" style="fill:' + (on ? BS : 'var(--surface)') + ';stroke:' + (on ? B : 'var(--line)') + ';stroke-width:1.6"/>';
       h += '<text class="mono" x="' + (tx + 16) + '" y="' + (ay + 5.5) + '" style="font-size:17px;font-weight:600;fill:var(--ink)">' + esc(v.name) + '</text>';
       h += '<text x="' + (tx + 28 + v.name.length * 10.4) + '" y="' + (ay + 4) + '" style="font-size:12.5px;fill:var(--muted)">' + v.bs + '</text>';
       if (on) { var cw = cur.chip.length * 9.9 + 22, cx = tx + tw - 12 - cw;
         h += '<rect x="' + cx + '" y="' + (ay - 10.5) + '" width="' + cw + '" height="21" rx="10.5" style="fill:' + B + '"/><text x="' + (cx + 11) + '" y="' + (ay + 4.5) + '" style="font:600 14.5px var(--display);fill:#fff">' + cur.chip + '</text>';
         h += '<text x="' + (cx - 8) + '" y="' + (ay + 4) + '" text-anchor="end" style="font:600 12.5px var(--display);fill:' + (cur.note ? 'var(--good)' : 'var(--muted)') + '">' + (cur.note || v.ss) + '</text>'; }
-      else h += '<text x="' + (tx + tw - 14) + '" y="' + (ay + 4) + '" text-anchor="end" style="font-size:12.5px;fill:var(--muted)">nothing yet</text>';
-      function into(y) { return '<path d="M424 ' + y + ' H438 a10 10 0 0 1 10 10 V' + (ay - 10) + ' a10 10 0 0 1 -10 10 H' + ax + '" marker-end="url(#lk-ah)" style="fill:none;stroke:' + B + ';stroke-width:2.6"/>'; }
+      else h += '<text x="' + (tx + tw - 14) + '" y="' + (ay + 4) + '" text-anchor="end" style="font-size:12.5px;fill:var(--muted)">nothing yet</text>'; }
+      var tgt = cur.to === 'r' ? qy + 29 : ay;
+      function into(y) { return '<path d="M424 ' + y + ' H438 a10 10 0 0 1 10 10 V' + (tgt - 10) + ' a10 10 0 0 1 -10 10 H' + ax + '" marker-end="url(#lk-ah)" style="fill:none;stroke:' + B + ';stroke-width:2.6"/>'; }
       if (cur.early) cur.early.forEach(function (n) { h += into(ry(rowOf(n))); });
       if (cur.from) h += into(ry(rowOf(cur.from)));
       // the reasoning and the output, generated after the prompt
@@ -875,6 +883,7 @@ footer { color: var(--muted); font-size: 13.5px; padding-block: 36px 48px; }
         h += '<rect x="' + (bx0 - 2) + '" y="' + ya2 + '" width="12" height="' + Math.max(hd, 8) + '" rx="6" style="fill:' + B + '"/>';
         h += vtext(cur.lay[2], ym2, 'font:600 13.5px var(--display);fill:' + B); }
       else h += vtext('the input, before the model runs', (ly0 + ly1) / 2, 'font-size:13px;fill:var(--muted)');
+      svg.setAttribute('viewBox', '-34 0 496 ' + (dy + 58 + (v.pad || 0)));
       svg.innerHTML = h;
       var box = $('lk-steps'); box.innerHTML = '';
       var prev = el('button', 'nav', '‹'); prev.type = 'button'; prev.setAttribute('aria-label', 'Previous step'); prev.disabled = step === 0; prev.onclick = function () { stop(); go(step - 1); }; box.appendChild(prev);
@@ -890,7 +899,7 @@ footer { color: var(--muted); font-size: 13.5px; padding-block: 36px 48px; }
     [].forEach.call($('look').querySelectorAll('[data-view]'), function (bt) {
       bt.addEventListener('click', function () { stop(); step = 0; show(bt.getAttribute('data-view')); draw(); });
     });
-    var m = location.hash.match(/lk=(\d+)/); if (m) step = +m[1];
+    var m = location.hash.match(/lk=(\d+)/); if (m) step = +m[1]; if (/lkcode/.test(location.hash)) show('code');
     draw();
   })();
 
